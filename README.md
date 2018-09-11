@@ -4,3 +4,7 @@ Maximum entropy method with regulariztion term to suppress spurious spikes in re
 See the link below for a detailed program documentation (in Chinese):
 
 https://zhuanlan.zhihu.com/p/24759384
+
+An English version of the program documentation is now available here: 
+
+https://github.com/PrimerLi/maximum-entropy-method/blob/master/algorithm.pdf
