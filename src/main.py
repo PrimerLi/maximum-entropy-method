@@ -4,6 +4,8 @@ import solver
 import generateSpectral
 import generateGreenFunction
 import printFile
+import chi
+import entropy
 
 def normalize(omega, A_original):
     s = 0.0
@@ -25,8 +27,8 @@ def generateModel(Nomega, modelFileName):
 
 def main():
     import sys
-    if (len(sys.argv) != 2):
-        print "alphaInitial = sys.argv[1]. "
+    if (len(sys.argv) != 3):
+        print "alphaInitial = sys.argv[1], lambd = sys.argv[2]. "
         return -1
 
     alphaInitial = float(sys.argv[1])
@@ -49,19 +51,26 @@ def main():
     A = model
     eps = 1.0e-4
 
-    lambd = 1.0e-3
+    lambd = float(sys.argv[2])
 
-    while(alpha > 1.0e-8):
+    A_averaged = np.zeros(len(A))
+
+    while(alpha > 1.0e-7):
         print "alpha = " + str(alpha)
         AUpdated = solver.solver(alpha, GReal, GImag, KReal, KImag, omega, A, model, LambdaInverse, lambd)
         error = np.linalg.norm(AUpdated - A)
         print "error = " + str(error)
-        printFile.printFile(omega, A, "A_final.txt")
+        printFile.printFile(omega, A, "A_final_" + str(lambd) + ".txt")
         alpha = alpha/1.1
         #lambd = max(lambd/1.03, 1.0e-2)
         A = normalize(omega, AUpdated)
+        deviation = chi.chi(GReal, GImag, KReal, KImag, A, omega, LambdaInverse)
+        S = entropy.entropy(omega, A, model)
+        A_averaged = A_averaged + A*np.exp(alpha*S - 0.5*deviation)
+        A_averaged = normalize(omega, A_averaged)
         #if (error < eps):
         #    break
+    printFile.printFile(omega, A_averaged, "A_averaged_" + str(lambd) + ".txt")
     return 0
 
 if __name__ == "__main__":

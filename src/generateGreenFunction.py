@@ -6,7 +6,7 @@ def gauss(x, mu, sigma):
     return 1.0/(sigma*np.sqrt(2*np.pi))*np.exp(-(x - mu)**2/(2*sigma**2))
 
 def spectral(x):
-    return 0.5*gauss(x, -2.0, 0.6) + 0.4*gauss(x, 2.1, 0.4) + 0.1*gauss(x, 0, 0.1)
+    return 0.45*gauss(x, -2.0, 0.4) + 0.55*gauss(x, 2.1, 0.5)
 
 def readA(spectralFileName):
     import os
@@ -53,7 +53,7 @@ def main():
 
     GReal, GImag = generateGreenFunction(omega_n, omega, A)
 
-    sigma = 1.0e-2
+    sigma = 1.0e-3
     noise = np.random.normal(0, sigma, Niom)
     GReal += noise
     noise = np.random.normal(0, sigma, Niom)
