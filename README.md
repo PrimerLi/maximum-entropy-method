@@ -8,3 +8,7 @@ https://zhuanlan.zhihu.com/p/24759384
 An English version of the program documentation is now available here: 
 
 https://github.com/PrimerLi/maximum-entropy-method/blob/master/algorithm.pdf
+
+A formal presentation of this algorithm can be found here:
+
+https://arxiv.org/abs/1810.06147
