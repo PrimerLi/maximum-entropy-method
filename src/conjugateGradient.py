@@ -27,6 +27,7 @@ def conjugateGradient(A, b):#A must be positive definite.
     while(True):
         counter = counter + 1
         if (counter > iterationMax):
+            #print "Warning: conjugate gradient method may have not yet converged. "
             break
         alpha = r0.dot(r0)/(p0.dot(A.dot(p0)))
         x1 = x0 + alpha*p0

@@ -6,7 +6,8 @@ def gauss(x, mu, sigma):
     return 1.0/(sigma*np.sqrt(2*np.pi))*np.exp(-(x - mu)**2/(2*sigma**2))
 
 def spectral(x):
-    return 0.36*gauss(x, -2.5, 0.45) + 0.36*gauss(x, 2.5, 0.45) + 0.28*gauss(x, 0, 0.65)
+    #return 0.36*gauss(x, -2.5, 0.45) + 0.36*gauss(x, 2.5, 0.45) + 0.28*gauss(x, 0, 0.65)
+    return 0.45*gauss(x, -2, 0.4) + 0.55*gauss(x, 2.1, 0.5)
 
 def readA(spectralFileName):
     import os
@@ -50,8 +51,8 @@ def main():
     omega_n = np.zeros(Niom)
     omega = np.zeros(Nomega)
     A = np.zeros(Nomega)
-    omegaLower = -8.0
-    omegaUpper = 8.0
+    omegaLower = -5.0
+    omegaUpper = 5.0
     domega = (omegaUpper - omegaLower)/float(Nomega - 1)
     for i in range(Nomega):
         omega[i] = omegaLower + i*domega

@@ -27,6 +27,8 @@ def generateModel(Nomega, modelFileName):
 
 def main():
     import sys
+    import os
+
     if (len(sys.argv) != 3):
         print "alphaInitial = sys.argv[1], lambd = sys.argv[2]. "
         return -1
@@ -45,10 +47,11 @@ def main():
 
     LambdaInverse = np.zeros((Niom, Niom))
     s = []
-    ifile = open("s.txt", "r")
-    for (index, string) in enumerate(ifile):
-        s.append(float(string))
-    ifile.close()
+    if (os.path.exists("s.txt")):
+        ifile = open("s.txt", "r")
+        for (index, string) in enumerate(ifile):
+            s.append(float(string))
+        ifile.close()
 
     if (len(s) == 0):
         for i in range(Niom):
@@ -68,7 +71,7 @@ def main():
 
     alpha_values = []
     chi_values = []
-    while(alpha >= 1.0e-6):
+    while(alpha >= 1.0e-7):
         print "alpha = " + str(alpha)
         alpha_values.append(alpha)
         AUpdated = solver.solver(alpha, GReal, GImag, KReal, KImag, omega, A, model, LambdaInverse, lambd)
@@ -82,11 +85,12 @@ def main():
         S = entropy.entropy(omega, A, model)
         #A_averaged = A_averaged + A*np.exp(alpha*S - 0.5*deviation)
         #A_averaged = normalize(omega, A_averaged)
-        alpha = alpha/1.4
+        alpha = alpha/2.0
         #if (error < eps):
         #    break
     #printFile.printFile(omega, A_averaged, "A_averaged_" + str(lambd) + ".txt")
     printFile.printFile(alpha_values, chi_values, "alpha_chi_" + str(lambd) + ".txt")
+    printFile.printFile(omega, A, "A_lambda_" + str(lambd) + ".txt")
     return 0
 
 if __name__ == "__main__":
