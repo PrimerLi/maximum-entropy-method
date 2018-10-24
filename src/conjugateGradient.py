@@ -21,7 +21,7 @@ def conjugateGradient(A, b):#A must be positive definite.
     x0 = np.zeros(length)
     r0 = b - A.dot(x0) 
     p0 = r0
-    iterationMax = 600
+    iterationMax = 100
     counter = 0
     eps = 1.0e-12
     while(True):

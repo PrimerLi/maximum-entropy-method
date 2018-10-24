@@ -4,7 +4,7 @@ import J
 import numpy as np
 
 def solver(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated, omega, A_initial, D, LambdaInverse, lambd):
-    eps = 1.0e-5
+    eps = 1.0e-15
     counter = 0
     iterationMax = 20
 
@@ -14,8 +14,8 @@ def solver(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated
             break
         Jacobian = J.J(alpha, A_initial, omega, K_real_rotated, K_imag_rotated, LambdaInverse, lambd)
         function = f.f(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated, A_initial, D, omega, LambdaInverse, lambd)
-        #solution = conjugateGradient.conjugateGradient(-Jacobian, function)
-        solution = np.linalg.inv(-Jacobian).dot(function)
+        solution = conjugateGradient.conjugateGradient(-Jacobian, function)
+        #solution = np.linalg.inv(-Jacobian).dot(function)
         error = conjugateGradient.norm(solution)
         print "counter = ", counter, ", error = ", error
         if (error < eps):

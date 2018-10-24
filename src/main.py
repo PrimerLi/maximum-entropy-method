@@ -44,8 +44,19 @@ def main():
     KImag = kernel.K_matrix_imag(omega_n, omega)
 
     LambdaInverse = np.zeros((Niom, Niom))
-    for i in range(Niom):
-        LambdaInverse[i, i] = 1.0
+    s = []
+    ifile = open("s.txt", "r")
+    for (index, string) in enumerate(ifile):
+        s.append(float(string))
+    ifile.close()
+
+    if (len(s) == 0):
+        for i in range(Niom):
+            LambdaInverse[i, i] = 1.0
+    else:
+        assert(len(s) == Niom)
+        for i in range(len(s)):
+            LambdaInverse[i, i] = 1.0/s[i]
     
     alpha = alphaInitial
     A = model
@@ -53,24 +64,29 @@ def main():
 
     lambd = float(sys.argv[2])
 
-    A_averaged = np.zeros(len(A))
+    #A_averaged = np.zeros(len(A))
 
-    while(alpha > 1.0e-7):
+    alpha_values = []
+    chi_values = []
+    while(alpha >= 1.0e-6):
         print "alpha = " + str(alpha)
+        alpha_values.append(alpha)
         AUpdated = solver.solver(alpha, GReal, GImag, KReal, KImag, omega, A, model, LambdaInverse, lambd)
+        AUpdated = normalize(omega, AUpdated)
         error = np.linalg.norm(AUpdated - A)
         print "error = " + str(error)
-        printFile.printFile(omega, A, "A_final_" + str(lambd) + ".txt")
-        alpha = alpha/1.1
-        #lambd = max(lambd/1.03, 1.0e-2)
-        A = normalize(omega, AUpdated)
+        A = AUpdated
+        printFile.printFile(omega, A, "A_alpha_" + str(alpha) + ".txt")
         deviation = chi.chi(GReal, GImag, KReal, KImag, A, omega, LambdaInverse)
+        chi_values.append(deviation)
         S = entropy.entropy(omega, A, model)
-        A_averaged = A_averaged + A*np.exp(alpha*S - 0.5*deviation)
-        A_averaged = normalize(omega, A_averaged)
+        #A_averaged = A_averaged + A*np.exp(alpha*S - 0.5*deviation)
+        #A_averaged = normalize(omega, A_averaged)
+        alpha = alpha/1.4
         #if (error < eps):
         #    break
-    printFile.printFile(omega, A_averaged, "A_averaged_" + str(lambd) + ".txt")
+    #printFile.printFile(omega, A_averaged, "A_averaged_" + str(lambd) + ".txt")
+    printFile.printFile(alpha_values, chi_values, "alpha_chi_" + str(lambd) + ".txt")
     return 0
 
 if __name__ == "__main__":

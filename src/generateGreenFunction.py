@@ -6,7 +6,7 @@ def gauss(x, mu, sigma):
     return 1.0/(sigma*np.sqrt(2*np.pi))*np.exp(-(x - mu)**2/(2*sigma**2))
 
 def spectral(x):
-    return 0.45*gauss(x, -2.0, 0.4) + 0.55*gauss(x, 2.1, 0.5)
+    return 0.36*gauss(x, -2.5, 0.45) + 0.36*gauss(x, 2.5, 0.45) + 0.28*gauss(x, 0, 0.65)
 
 def readA(spectralFileName):
     import os
@@ -28,12 +28,24 @@ def generateGreenFunction(omega_n, omega, A):
 
 def main():
     import sys
+    import os
+
     if (len(sys.argv) != 3):
         print "Niom = sys.argv[1], Nomega = sys.argv[2]. "
         return -1
 
     Niom = int(sys.argv[1])
     Nomega = int(sys.argv[2])
+
+    s = []
+    if (os.path.exists("s.txt")):
+        ifile = open("s.txt", "r")
+        for (index, string) in enumerate(ifile):
+            s.append(float(string))
+        ifile.close()
+    
+    if (len(s) != 0):
+        Niom = len(s)
 
     omega_n = np.zeros(Niom)
     omega = np.zeros(Nomega)
@@ -53,11 +65,15 @@ def main():
 
     GReal, GImag = generateGreenFunction(omega_n, omega, A)
 
-    sigma = 1.0e-3
-    noise = np.random.normal(0, sigma, Niom)
-    GReal += noise
-    noise = np.random.normal(0, sigma, Niom)
-    GImag += noise
+    sigma = 0.001
+    if (len(s) != 0):
+        noise_real = np.asarray(map(lambda ele: np.random.normal(0, ele), s))
+        noise_imag = np.asarray(map(lambda ele: np.random.normal(0, ele), s))
+    else:
+        noise_real = np.random.normal(0, sigma, Niom)
+        noise_imag = np.random.normal(0, sigma, Niom)
+    GReal += noise_real
+    GImag += noise_imag
     ofile = open("noise.txt", "w")
     ofile.write(str(sigma) + "\n")
     ofile.close()
