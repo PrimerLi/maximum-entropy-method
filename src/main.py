@@ -71,7 +71,7 @@ def main():
 
     alpha_values = []
     chi_values = []
-    while(alpha >= 1.0e-7):
+    while(alpha >= 1.0e-8):
         print "alpha = " + str(alpha)
         alpha_values.append(alpha)
         AUpdated = solver.solver(alpha, GReal, GImag, KReal, KImag, omega, A, model, LambdaInverse, lambd)
@@ -85,7 +85,7 @@ def main():
         S = entropy.entropy(omega, A, model)
         #A_averaged = A_averaged + A*np.exp(alpha*S - 0.5*deviation)
         #A_averaged = normalize(omega, A_averaged)
-        alpha = alpha/2.0
+        alpha = alpha/3.0
         #if (error < eps):
         #    break
     #printFile.printFile(omega, A_averaged, "A_averaged_" + str(lambd) + ".txt")
