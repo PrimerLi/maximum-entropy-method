@@ -16,8 +16,8 @@ def normalize(omega, A_original):
 def generateModel(Nomega, modelFileName):
     omega = np.zeros(Nomega)
     A = np.zeros(Nomega)
-    omegaLower = -5
-    omegaUpper = 5
+    omegaLower = -10
+    omegaUpper = 10
     domega = (omegaUpper - omegaLower)/float(Nomega - 1)
     for i in range(Nomega):
         omega[i] = omegaLower + i*domega
@@ -34,16 +34,31 @@ def main():
         return -1
 
     alphaInitial = float(sys.argv[1])
-    omega, temp = generateGreenFunction.readA("A.txt")
-    model = map(lambda ele: generateGreenFunction.gauss(ele, 0, 1), omega)
-    printFile.printFile(omega, model, "model.txt")
+    omega, model = generateGreenFunction.readA("model.txt")
+    Nomega = len(omega)
 
-    omega_n, GReal = generateGreenFunction.readA("G_real.txt")
-    omega_n, GImag = generateGreenFunction.readA("G_imag.txt")
+    omega_n, GReal = generateGreenFunction.readA("G_real_rotated.txt")
+    omega_n, GImag = generateGreenFunction.readA("G_imag_rotated.txt")
     Niom = len(omega_n)
 
-    KReal = kernel.K_matrix_real(omega_n, omega)
-    KImag = kernel.K_matrix_imag(omega_n, omega)
+    #KReal = kernel.K_matrix_real(omega_n, omega)
+    #KImag = kernel.K_matrix_imag(omega_n, omega)
+    KReal = np.zeros((Niom, Nomega))
+    KImag = np.zeros((Niom, Nomega))
+    ifile = open("K_real_rotated.txt", "r")
+    for i in range(Niom):
+        for j in range(Nomega):
+            string = ifile.readline()
+            a = string.split()
+            KReal[i,j] = float(a[2])
+    ifile.close()
+    ifile = open("K_imag_rotated.txt", "r")
+    for i in range(Niom):
+        for j in range(Nomega):
+            string = ifile.readline()
+            a = string.split()
+            KImag[i,j] = float(a[2])
+    ifile.close()
 
     LambdaInverse = np.zeros((Niom, Niom))
     s = []
@@ -71,7 +86,7 @@ def main():
 
     alpha_values = []
     chi_values = []
-    while(alpha >= 1.0e-8):
+    while(alpha >= 1.0e-2):
         print "alpha = " + str(alpha)
         alpha_values.append(alpha)
         AUpdated = solver.solver(alpha, GReal, GImag, KReal, KImag, omega, A, model, LambdaInverse, lambd)
@@ -85,7 +100,7 @@ def main():
         S = entropy.entropy(omega, A, model)
         #A_averaged = A_averaged + A*np.exp(alpha*S - 0.5*deviation)
         #A_averaged = normalize(omega, A_averaged)
-        alpha = alpha/3.0
+        alpha = alpha/1.5
         #if (error < eps):
         #    break
     #printFile.printFile(omega, A_averaged, "A_averaged_" + str(lambd) + ".txt")

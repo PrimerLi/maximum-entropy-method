@@ -18,7 +18,7 @@ def adam(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated, 
         counter += 1
         if (counter > iterationMax):
             error = np.linalg.norm(gradient)
-            print "counter = " + str(counter) + ", norm of gradient = " + str(error)
+            #print "counter = " + str(counter) + ", norm of gradient = " + str(error)
             break
         gradient = f.f(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated, A_initial, D, omega, LambdaInverse, lambd)
         m = beta1*m + (1 - beta1)*gradient
@@ -49,17 +49,19 @@ def solver(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated
         Jacobian = J.J(alpha, A_initial, omega, K_real_rotated, K_imag_rotated, LambdaInverse, lambd)
         function = f.f(alpha, G_real_rotated, G_imag_rotated, K_real_rotated, K_imag_rotated, A_initial, D, omega, LambdaInverse, lambd)
         #solution = conjugateGradient.conjugateGradient(-Jacobian, function)
-        eigenvalues = np.linalg.eigvals(-Jacobian)
-        eigen_max = max(eigenvalues)
-        eigen_min = min(eigenvalues)
-        print "max and min of eigenvalues of Hessian matrix are " + str(eigen_max) + ", " + str(eigen_min)
-        if (abs(eigen_max) > 1.0e-3 and abs(eigen_min) > 1.0e-3):
-            solution = np.linalg.inv(-Jacobian).dot(function)
-        else:
-            solution = conjugateGradient.conjugateGradient(-Jacobian, function)
+        #eigenvalues = np.linalg.eigvals(-Jacobian)
+        #eigen_max = max(eigenvalues)
+        #eigen_min = min(eigenvalues)
+        #print "max and min of eigenvalues of Hessian matrix are " + str(eigen_max) + ", " + str(eigen_min)
+        #if (abs(eigen_max) > 1.0e-3 and abs(eigen_min) > 1.0e-3):
+        #if False:
+        #    solution = np.linalg.inv(-Jacobian).dot(function)
+        #else:
+        #    solution = conjugateGradient.conjugateGradient(-Jacobian, function)
+        solution = np.linalg.solve(-Jacobian, function)
         #error = np.linalg.norm(solution)
         error = np.linalg.norm(function)
-        print "counter = ", counter, ", norm of gradient = ", np.linalg.norm(function) #, ", error = ", error
+        #print "counter = ", counter, ", norm of gradient = ", np.linalg.norm(function) #, ", error = ", error
         #print "counter = ", counter, ", error = ", error, ", det of Hessian matrix = ", det, ", norm of gradient = ", np.linalg.norm(function)
         if (error < eps):
             break

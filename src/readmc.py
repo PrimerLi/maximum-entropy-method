@@ -9,7 +9,7 @@ def main():
     import numpy as np
     
     omega_n = []
-    ifile = open("G_cc_imag.txt", "r")
+    ifile = open("g_imag.txt", "r")
     for index, string in enumerate(ifile):
         omega_n.append(float(string.split()[0]))
     ifile.close()
@@ -17,17 +17,17 @@ def main():
 
     G_real = np.zeros(Niom)
     G_imag = np.zeros(Niom)
-    ifile = open("G_cc_real.txt", "r")
+    ifile = open("g_real.txt", "r")
     for index, string in enumerate(ifile):
         G_real[index] = float(string.split()[1])
     ifile.close()
-    ifile = open("G_cc_imag.txt", "r")
+    ifile = open("g_imag.txt", "r")
     for index, string in enumerate(ifile):
         G_imag[index] = float(string.split()[1])
     ifile.close()
 
     C_real = np.zeros((Niom, Niom))
-    ifile = open("CM_cc_real.txt")
+    ifile = open("C_real.txt")
     for i in range(Niom):
         for j in range(Niom):
             string = ifile.readline()
