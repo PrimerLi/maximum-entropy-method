@@ -3,7 +3,7 @@ Maximum entropy method with regularization term to suppress spurious spikes in r
 
 See the link below for a detailed program documentation (in Chinese):
 
-https://zhuanlan.zhihu.com/p/24759384
+https://zhuanlan.zhihu.com/p/366209195
 
 An English version of the program documentation is now available here: 
 
